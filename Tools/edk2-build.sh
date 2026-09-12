@@ -31,7 +31,7 @@ echo "Task: EDK2 build"
 # Build all targets on VSTS (phasing out Travis right now) or if user asks to do so
 if [ -n "${BUILDALL:-}" ]; then
     echo "User requested build all available targets."
-    AVAILABLE_TARGETS=("Nexus6P" "Nexus5X")
+    AVAILABLE_TARGETS=("Nexus6P" "Nexus5X" "LGG4")
 fi
 
 if [ -n "${BUILD_BULLHEAD:-}" ]; then
@@ -44,8 +44,13 @@ if [ -n "${BUILD_ANGLER:-}" ]; then
     AVAILABLE_TARGETS=("Nexus6P")
 fi
 
+if [ -n "${BUILD_H815:-}" ]; then
+    echo "User requested build h815."
+    AVAILABLE_TARGETS=("LGG4")
+fi
+
 if [ -z "${AVAILABLE_TARGETS+x}" ]; then
-    echo "No target selected. Set BUILDALL, BUILD_BULLHEAD, or BUILD_ANGLER." >&2
+    echo "No target selected. Set BUILDALL, BUILD_BULLHEAD, or BUILD_ANGLER, or BUILD_H815." >&2
     exit 1
 fi
 

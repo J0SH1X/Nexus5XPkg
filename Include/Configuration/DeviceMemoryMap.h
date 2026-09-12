@@ -81,7 +81,12 @@ static ARM_MEMORY_REGION_DESCRIPTOR_EX gDeviceMemoryDescriptorEx[] = {
 #if SILICON_PLATFORM == 8992
     {"HLOS 2",            0x00D00000, 0x02700000, AddMem, SYS_MEM, SYS_MEM_CAP,  BsData, WRITE_BACK},
     {"Display Reserved",  0x03400000, 0x00C00000, AddMem, MEM_RES, WRITE_THROUGH, MaxMem, WRITE_THROUGH},
+#if MEMMAPLGEHAX == 1
+    {"Crash Display Reserved",  0x04000000, 0x00C00000, AddMem, MEM_RES, WRITE_THROUGH, MaxMem, WRITE_THROUGH},
+    {"HLOS 3",            0x04c00000, 0x00400000, AddMem, SYS_MEM, SYS_MEM_CAP,  Conv,   WRITE_BACK},
+#else
     {"HLOS 3",            0x04000000, 0x01000000, AddMem, SYS_MEM, SYS_MEM_CAP,  Conv,   WRITE_BACK},
+#endif
     {"Removed Region 1",  0x05000000, 0x01500000, AddMem, SYS_MEM, SYS_MEM_CAP,  Reserv, NS_DEVICE},
 #else
     {"HLOS 2",            0x00D00000, 0x02700000, AddMem, SYS_MEM, SYS_MEM_CAP,  BsData, WRITE_BACK},

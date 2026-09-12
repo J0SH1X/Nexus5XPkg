@@ -21,6 +21,7 @@ cd edk2
 
 ./Nexus5XPkg/Tools/CI/Builder/BuildAngler.sh
 ./Nexus5XPkg/Tools/CI/Builder/BuildBullhead.sh
+./Nexus5XPkg/Tools/CI/Builder/BuildH815.sh
 
 # Check if we have both FD ready
 if [ ! -f Build/Nexus5X-AARCH64/DEBUG_GCC5/FV/MSM8992_EFI.fd ]; then

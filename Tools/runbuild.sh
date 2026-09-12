@@ -159,9 +159,14 @@ while [ $# -gt 0 ]; do
           export BUILD_BULLHEAD=TRUE
           ;;
 
+        h815)
+          echo "[Builder] Run H815 Build."
+          export BUILD_H815=TRUE
+          ;;
+
         *)
           echo "[Builder] Error: Unknown device '$2'."
-          echo "[Builder] Supported devices: angler, bullhead"
+          echo "[Builder] Supported devices: angler, bullhead, h815"
           exit 1
           ;;
       esac
