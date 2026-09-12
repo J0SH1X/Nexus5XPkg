@@ -7,16 +7,6 @@
 
 #Cleanup if needed
 
-if [ -e "Nexus5XPkg/ImageResources/Angler/uefi_angler.img" ]; then
-    rm -f "Nexus5XPkg/ImageResources/Angler/uefi_angler.img"
-fi
-
-if [ -e "Nexus5XPkg/ImageResources/Bullhead/uefi_bullhead.img" ]; then
-    rm -f "Nexus5XPkg/ImageResources/Bullhead/uefi_bullhead.img"
-fi
-
-echo "$(pwd)"
-
 if [ -e "Nexus5XPkg/BootShim/BootShim.elf" ] || \
    [ -e "Nexus5XPkg/BootShim/BootShim.bin" ]; then
     echo "[Builder] Cleaning BootShim"

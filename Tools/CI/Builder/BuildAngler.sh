@@ -5,18 +5,14 @@
 # All rights reserved.
 #
 
-# Export AArch64 Tools prefix on CI
-export GCC5_AARCH64_PREFIX=/opt/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-elf/bin/aarch64-elf-
-# Export BUILD flags
-export BUILD_ANGLER=1 ##??
-
-# Go to EDK2 workspace
-cd ..
-cd edk2
+#Cleanup if needed
+if [ -e "Nexus5XPkg/ImageResources/Angler/uefi_angler.img" ]; then
+    rm -f "Nexus5XPkg/ImageResources/Angler/uefi_angler.img"
+fi
 
 # Start build
 echo "Start build..."
-. Nexus5XPkg/Tools/rundbbuild.sh --angler --development
+. Nexus5XPkg/Tools/runbuild.sh --device angler --development
 
 # Check if we have both FD ready
 if [ ! -f Build/Nexus6P-AARCH64/DEBUG_GCC5/FV/MSM8994_EFI.fd ]; then

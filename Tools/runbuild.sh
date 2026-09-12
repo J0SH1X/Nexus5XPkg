@@ -1,11 +1,9 @@
 #!/bin/bash
 
-SCRIPTNAME="rundbbuild.sh"
+SCRIPTNAME="runbuild.sh"
 RECONFIG=FALSE
 DEVBUILD=FALSE
 CIBUILD=FALSE
-NEXUS6P=FALSE
-NEXUS5X=FALSE
 
 function HelpMsg()
 {
@@ -102,11 +100,7 @@ function SourceEnv()
 
 function DevelopmentBuild()
 {
-  if [ "$NEXUS6P" = TRUE ]; then
     ./Nexus5XPkg/Tools/edk2-build.sh
-  elif [ "$NEXUS5X" = TRUE ]; then
-    ./Nexus5XPkg/Tools/edk2-build.sh
-  fi
 
   if [ ! $? -eq 0 ]; then
       echo "[Builder] Build failed."
@@ -117,11 +111,7 @@ function DevelopmentBuild()
 
 function CIBuild()
 {
-  if [ "$NEXUS6P" = TRUE ]; then
     ./Nexus5XPkg/Tools/edk2-build.sh
-  elif [ "$NEXUS5X" = TRUE ]; then
-    ./Nexus5XPkg/Tools/edk2-build.sh
-  fi
 
   if [ ! $? -eq 0 ]; then
       echo "[Builder] Build failed."
@@ -130,56 +120,67 @@ function CIBuild()
   
 }
 
-I=$#
-while [ $I -gt 0 ]
-do
+while [ $# -gt 0 ]; do
   case "$1" in
     --development|-dev)
-      # Development build
       echo "[Builder] Configure environment and run development build."
       if [ "$CIBUILD" = TRUE ]; then
         echo "[Builder] Only one build configuration can be selected."
-        return 1
-      else
-        DEVBUILD=TRUE
+        exit 1
       fi
+      DEVBUILD=TRUE
       shift
-    ;;
+      ;;
+
     --production|-ci)
-      # CI Build
       echo "[Builder] Configure environment and run CI build (clean)."
       if [ "$DEVBUILD" = TRUE ]; then
         echo "[Builder] Only one build configuration can be selected."
-        return 1
-      else
-        CIBUILD=TRUE
+        exit 1
       fi
+      CIBUILD=TRUE
       shift
-    ;;
-    --angler|-angler)
-      # 820C build
-      echo "[Builder] Run Nexus 6P Build."
-      NEXUS6P=TRUE
-      shift
-    ;;
-    --bullhead|-bullhead)
-      # 950XL build
-      echo "[Builder] Run Nexus 5X Build."
-      NEXUS5X=TRUE
-      shift
-    ;;
-    -?|-h|--help|*)
-      HelpMsg
-      break
-    ;;
-  esac
-  I=$(($I - 1))
-done
+      ;;
 
-if [ $I -gt 0 ]
-then
-  return 1
-else
+    --device)
+      if [ -z "$2" ]; then
+        echo "[Builder] Error: --device requires a device name."
+        exit 1
+      fi
+
+      case "$2" in
+        angler)
+          echo "[Builder] Run Nexus 6P Build."
+          export BUILD_ANGLER=TRUE
+          ;;
+
+        bullhead)
+          echo "[Builder] Run Nexus 5X Build."
+          export BUILD_BULLHEAD=TRUE
+          ;;
+
+        *)
+          echo "[Builder] Error: Unknown device '$2'."
+          echo "[Builder] Supported devices: angler, bullhead"
+          exit 1
+          ;;
+      esac
+
+      shift 2
+      ;;
+
+    -?|-h|--help)
+      HelpMsg
+      exit 0
+      ;;
+
+    *)
+      echo "[Builder] Error: Unknown argument '$1'."
+      HelpMsg
+      exit 1
+      ;;
+  esac
+done
 
   echo "[Builder] Configure environment."
   SourceEnv
@@ -202,4 +203,3 @@ else
       echo "[Builder] Build failed."
       return $?
   fi
-fi

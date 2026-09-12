@@ -25,8 +25,8 @@ cd ..
 
 # Set a link to EDK2 workspace
 ln -s $(pwd)/Nexus5XPkg $(pwd)/edk2/Nexus5XPkg
-# ln -s $(pwd)/Nexus5XPkg/Tools/rundbbuild.sh $(pwd)/edk2/rundbbuild.sh
-chmod +x $(pwd)/Nexus5XPkg/Tools/rundbbuild.sh
+# ln -s $(pwd)/Nexus5XPkg/Tools/runbuild.sh $(pwd)/edk2/runbuild.sh
+chmod +x $(pwd)/Nexus5XPkg/Tools/runbuild.sh
 
 # Build EDK2 Tools
 cd edk2
