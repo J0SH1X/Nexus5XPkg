@@ -28,3 +28,6 @@ AcpiTables/Hapanero/generated
 # BootShim
 BootShim/BootShim.bin
 BootShim/BootShim.elf
+
+ImageResources/Angler/*.img
+ImageResources/Bullhead/*.img
