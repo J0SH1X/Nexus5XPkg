@@ -1,72 +1,40 @@
 # EDK2 UEFI Implementation for Lumia 950 and Lumia 950 XL
 
-## For users
-
-You can download the latest UEFI build by clicking the Azure Pipelines icon below. Click Artifacts button in Azure Pipelines, then download UEFI.elf in ELF directory.
-
-[![Build Status (Visual Studio Team Services)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_apis/build/status/Lumia950XLPkg%20CI%20build?branchName=master)](https://dev.azure.com/LumiaWoA/Lumia950XLPkg/_build/latest?definitionId=1&branchName=master)
-
 ## What's this?
 
-This package demonstrates an AArch64 UEFI implementation for hacked Lumia 950 and Lumia 950 XL. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details. Please be aware that MSM8992 devices have limited support.
+This package demonstrates an AArch64 UEFI implementation for Bootloader unlocked Nexus 6P and Nexus 5X. Currently it is able to boot Windows 10 ARM64 as well as various Linux distros. See notes below for more details. Please be aware that MSM8992 devices have limited support.
 
-Hapanero support has been dropped as of 2020/11. Hapanero users are expected to completely understand all hardware, firmware and software implementation details, thus there's no point to keep an untested target floating in this project. For existing Hapanero owners, please build and fix this firmware by yourself (use 950 XL configuration as the blueprint), but no PR regarding Hapanero will be accepted.
 
 ## Support Status
 Applicable to all supported targets unless noted.
 
 - Low-speed I/O: I2C, SPI, GPIO, SPMI and Pinmux (TLMM).
 - Power Management: PMIC and Resource Power Manager (RPM).
-- High-speed I/O for firmware and HLOS: eMMC (SDR50 in firmware, HS200/HS400 in OS) and microSD (be aware that a few cards are unsupported), PCI Express (Firmware-configured, HLOS Only, x2 Lane)
+- High-speed I/O for firmware and HLOS: eMMC (SDR50 in firmware, HS200/HS400 in OS) PCI Express (Firmware-configured, HLOS Only, x2 Lane)
 - Peripherals: Touchscreen (QUP I2C), side-band buttons (TLMM GPIO and PMIC GPIO) and Lattice UC120 (iCE5LP2K) FPGA configuration
 - Display FrameBuffer depends on stock Qualcomm UEFI for boostrapping, MDP is not fully implemented.
 
-## What can you do?
-
-I am too busy to write an average-user tutorial. So, if you are interested in, you are welcome to
-contribute to an easy instruction for all Lumia 950 (XL) users.
-
-Or you can buy me a coffee: [PayPal](https://www.paypal.com/paypalme/imbushuo).
 
 ## Build
 
-If you are familiar with EDK2, you don't need to use my build script.
+cd edk2
 
-- Checkout a copy of [EDK2](https://github.com/tianocore/edk2). We are currently tracking the `master` branch. At least commit `1b6b4a83e1d85e48837068dfe409f5557b50d71d` works without further modification.
-- Checkout this repository under EDK2's worktree.
-- Install ACPI tools from your package manager or ACPICA website.
-- Install `uuid-dev` and `python` (or equivalent package on your distribution).
-- Install [Linaro AArch64 GCC toolchains](http://releases.linaro.org/components/toolchain/binaries/), my build
-script uses `gcc-linaro-7.5.0-2019.12`. Then untar them. I place everything under `/opt` directory, so I have 
-directories like `/opt/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-elf/bin`. If you placed it somewhere else, modify build scripts. If you are macOS user, bootstrap the toolchain using ct-ng.
-- Run EDK2 BaseTools setup (`make -C BaseTools`).
-- Copy `rundbbuild.sh` in `Tools` directory to your EDK2 worktree root directory.
-- By default only MSM8994 target is built. To build all, set environment variable `BUILDALL`.
-- Start build: `. rundbbuild.sh --950xl --development`
+./Nexus5XPkg/Tools/CI/Bootstrapper/Stage0.sh
+./Nexus5XPkg/Tools/CI/Bootstrapper/Stage1.sh
 
-## WSL Build Notes
+./Nexus5XPkg/Tools/CI/Builder/Build.sh for all targets
+./Nexus5XPkg/Tools/CI/Builder/BuildAngler.sh for Nexus 6P
+./Nexus5XPkg/Tools/CI/Builder/BuildBullhead.sh for Nexus 5X
 
-If you checked out the EDK2 repository under Windows and build it using WSL, you will have trouble locating BaseTools Python classes due to [file case sensitive behavior changes](https://blogs.msdn.microsoft.com/commandline/2018/02/28/per-directory-case-sensitivity-and-wsl/) in WSL. Run the following PowerShell script under EDK2 directory prior to build:
+For Production Builds you want to invoke the runbuild script manually
 
-	Get-ChildItem .\BaseTools\ -Directory -Recurse | Foreach-Object { fsutil.exe file setCaseSensitiveInfo $_.FullName }
-
-You only need to run it once.
+./Nexus5XPkg/Tools/runbuild.sh --device Angler --production for Nexus 6P
+./Nexus5XPkg/Tools/runbuild.sh --device Bullhead --production for Nexus 5X
 
 ## Run
 
-Per UEFI specification, ARM32 UEFI cannot boot ARM64 binaries directly. A recent engineering
-change removed the dependency of Little Kernel. LK can still boot it, but the path is untested.
-
-To run this UEFI build on Lumia 950 XL, the following procedure is required:
-
-- Check out [Boot Shim](https://github.com/imbushuo/boot-shim). This Boot Manager Application 
-implements a simple ELF loader for the kickstarter (LK) with Secure Monitor Call for EL1 transition.
-You will need branch `msm8994-aa64`.
-- Place `UEFI.elf` in the WP EFIESP root directory, copy Boot Shim EFI application
-to the EFIESP partition, create a new BCD entry for it.
-- Select this boot entry to enter UEFI.
-
-To re-flash UEFI, simply place new `UEFI.elf` in WP EFIESP root directory.
+fastboot boot uefi_angler.img for Nexus 6P
+fastboot boot uefi_bullhead.img for Nexus 5X
 
 ## TZ Implementation Notes
 
