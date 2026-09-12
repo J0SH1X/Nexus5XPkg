@@ -31,3 +31,4 @@ BootShim/BootShim.elf
 
 ImageResources/Angler/*.img
 ImageResources/Bullhead/*.img
+workspace/*
