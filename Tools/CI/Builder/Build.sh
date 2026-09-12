@@ -5,12 +5,30 @@
 # All rights reserved.
 #
 
+#Cleanup if needed
+
+if [ -e "Nexus5XPkg/ImageResources/Angler/uefi_angler.img" ]; then
+    rm -f "Nexus5XPkg/ImageResources/Angler/uefi_angler.img"
+fi
+
+if [ -e "Nexus5XPkg/ImageResources/Bullhead/uefi_bullhead.img" ]; then
+    rm -f "Nexus5XPkg/ImageResources/Bullhead/uefi_bullhead.img"
+fi
+
+echo "$(pwd)"
+
+if [ -e "Nexus5XPkg/BootShim/BootShim.elf" ] || \
+   [ -e "Nexus5XPkg/BootShim/BootShim.bin" ]; then
+    echo "[Builder] Cleaning BootShim"
+    make clean -C Nexus5XPkg/BootShim
+fi
+
+
+
 # Go to EDK2 workspace
 cd ..
 cd edk2
 
-# Start build
-echo "Start build..."
 ./Nexus5XPkg/Tools/CI/Builder/BuildAngler.sh
 ./Nexus5XPkg/Tools/CI/Builder/BuildBullhead.sh
 
